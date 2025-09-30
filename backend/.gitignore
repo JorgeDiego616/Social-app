@@ -1,0 +1,25 @@
+# Archivos compilados de Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Entornos virtuales
+.venv/
+env/
+venv/
+
+# Configuración de IDEs
+.vscode/
+.idea/
+
+# Archivos de sistema
+.DS_Store
+
+# Variables de entorno (no subir claves)
+.env
+*.env
+
+# Carpeta de builds/dist
+dist/
+build/
