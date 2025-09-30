@@ -49,7 +49,7 @@ Representa la relación de "seguir" entre usuarios.
 
 - **1 usuario → N posts**
 - **1 usuario → N seguidores**
-- **1 usuario → N seguidos**
+- **1 usuario → N seguidos***
 
 Diagrama (simplificado):
 
