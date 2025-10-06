@@ -3,309 +3,354 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Social UI — Tema Oscuro</title>
+  <title>Shadow Social — Demo Completa</title>
   <style>
     :root{
-      --bg:#0b0b0c;
-      --panel:#0f1113;
-      --muted:#9aa3ad;
-      --accent:#7c5cff;
-      --glass: rgba(255,255,255,0.03);
-      --radius:14px;
-      --card-radius:16px;
-      --shadow: 0 6px 18px rgba(2,6,23,0.6);
-      --glass-border: rgba(255,255,255,0.04);
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      --bg:#0b0b0c; --panel:#111214; --muted:#9aa3ad; --accent:#7c5cff; --accent2:#3a9bdc;
+      --radius:14px; --card-radius:16px; --shadow:0 8px 24px rgba(2,6,23,0.6);
+      font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
     }
     *{box-sizing:border-box}
-    html,body{height:100%;}
-    body{
-      margin:0;
-      background:linear-gradient(180deg,#020203 0%, var(--bg) 100%);
-      color:#e6eef6;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-    }
+    body{margin:0; min-height:100vh; background:linear-gradient(180deg,#050506,#0b0b0c); color:#e9f0f7}
 
-    /* Layout */
-    .app{
-      display:grid;
-      grid-template-columns:320px 1fr 320px;
-      gap:22px;
-      max-width:1200px;
-      margin:28px auto;
-      padding:20px;
-      min-height:calc(100vh - 56px);
-    }
+    header.topbar{position:sticky;top:0;display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:#0f1012;box-shadow:var(--shadow);z-index:60}
+    .brand{display:flex;gap:12px;align-items:center}
+    .mark{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-weight:800}
+    .brand h1{margin:0;font-size:18px}
 
-    header.topbar{
-      position:sticky; top:0; z-index:40;
-      display:flex; align-items:center; gap:16px;
-      padding:12px 24px; margin:12px auto;
-      max-width:1200px; border-radius:18px; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(6px);
-    }
-    .logo{
-      display:flex; gap:12px; align-items:center;
-      font-weight:700; letter-spacing:0.4px;
-    }
-    .logo .mark{width:36px; height:36px; border-radius:10px; background:linear-gradient(135deg,var(--accent), #3ec7ff); display:grid; place-items:center; font-weight:800;}
+    .top-actions{display:flex;gap:12px;align-items:center}
+    .icon-btn{background:transparent;border:0;color:inherit;padding:8px;border-radius:10px;cursor:pointer;font-size:18px}
+    .notif-count{position:relative}
+    .notif-count span{position:absolute;top:-6px;right:-8px;background:var(--accent2);color:#04121a;border-radius:50%;padding:2px 6px;font-size:11px;font-weight:700}
 
-    /* Left & Right panels */
-    .panel{
-      background:var(--panel);
-      border-radius:var(--radius);
-      padding:16px;
-      box-shadow: var(--shadow);
-      border:1px solid var(--glass-border);
-    }
-    .sidebar .profile{
-      display:flex; gap:12px; align-items:center;
-    }
-    .avatar{width:56px; height:56px; border-radius:12px; background:linear-gradient(180deg,#1f2933,#0b0f13); display:inline-grid; place-items:center; font-weight:700; color:var(--accent);}
-    .muted{color:var(--muted); font-size:13px}
+    main.app{max-width:1200px;margin:22px auto;padding:18px;display:grid;grid-template-columns:280px 1fr 320px;gap:20px}
+    .panel{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:14px;border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid rgba(255,255,255,0.03)}
 
-    /* Composer */
-    .composer{display:flex; gap:12px; align-items:flex-start}
-    textarea{flex:1; min-height:72px; resize:none; background:var(--glass); border-radius:12px; border:1px solid rgba(255,255,255,0.03); padding:12px; color:inherit}
-    .btn{background:var(--accent); color:#07101a; border:none; padding:10px 14px; border-radius:10px; font-weight:700; cursor:pointer}
-    .small-btn{padding:8px 10px; font-size:13px}
+    /* left */
+    .profile-compact{display:flex;gap:12px;align-items:center}
+    .avatar{width:56px;height:56px;border-radius:12px;background:#101316;display:grid;place-items:center;font-weight:800;color:var(--accent)}
+    .muted{color:var(--muted)}
+    .nav-list{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+    .nav-item{padding:8px 10px;border-radius:10px;cursor:pointer}
+    .nav-item.active{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#04121a;font-weight:700}
 
-    /* Feed */
-    .feed{display:flex; flex-direction:column; gap:16px}
-    .post{background:linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01)); padding:14px; border-radius:var(--card-radius); border:1px solid var(--glass-border);}
-    .post .meta{display:flex; gap:12px; align-items:center}
-    .post .content{margin-top:10px; color:#dfe9f6}
-    .post img.media{width:100%; border-radius:10px; margin-top:12px; max-height:420px; object-fit:cover}
-    .actions{display:flex; gap:12px; margin-top:12px; align-items:center}
-    .action{display:inline-flex; gap:8px; align-items:center; padding:8px 10px; border-radius:10px; cursor:pointer; user-select:none}
+    /* composer */
+    .composer{display:flex;gap:12px;flex-direction:column}
+    .composer textarea{min-height:72px;background:#0e0f11;border:1px solid rgba(255,255,255,0.03);border-radius:12px;padding:10px;color:inherit;resize:none}
+    .composer .row{display:flex;gap:8px;align-items:center}
+    .btn{background:var(--accent);border:0;padding:8px 12px;border-radius:10px;color:#04121a;font-weight:800;cursor:pointer}
+    .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.03);color:var(--muted)}
 
-    /* Right suggestions */
-    .suggestions li{display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px dashed rgba(255,255,255,0.02);} 
+    /* feed */
+    .feed{display:flex;flex-direction:column}
+    .post{background:linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01));padding:14px;border-radius:14px;margin-bottom:12px;border:1px solid rgba(255,255,255,0.02)}
+    .post .meta{display:flex;gap:12px;align-items:flex-start}
+    .post .meta .who{display:flex;flex-direction:column}
+    .post .content{margin-top:10px;line-height:1.45}
+    .post img.media{width:100%;border-radius:12px;margin-top:12px;max-height:420px;object-fit:cover}
+    .post .meta small{color:var(--muted)}
 
-    /* Responsive */
-    @media (max-width:980px){
-      .app{grid-template-columns:1fr; padding:12px}
-      header.topbar{border-radius:12px}
-      .panel.right{display:none}
-    }
+    .post .actions{display:flex;align-items:center;gap:10px;margin-top:10px}
+    .action{display:inline-flex;gap:8px;align-items:center;padding:8px;border-radius:10px;cursor:pointer}
+    .action.like.active{background:rgba(124,92,255,0.12)}
 
-    /* Tiny extras */
-    .pill{background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:6px 10px; border-radius:999px; font-size:13px}
-    .search{display:flex; gap:8px; align-items:center; background:var(--glass); padding:8px; border-radius:12px}
+    /* right */
+    .suggestion{display:flex;align-items:center;justify-content:space-between;padding:8px;border-radius:10px;margin-bottom:8px}
+    .profile-mini{display:flex;gap:10px;align-items:center}
 
-    /* subtle animation */
-    .like.active{transform:scale(1.06)}
-    .fade-in{animation:fadeIn .28s ease both}
-    @keyframes fadeIn{from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none}}
+    /* notifications panel */
+    .notif-panel{max-height:320px;overflow:auto}
+    .notif-item{padding:10px;border-radius:10px;background:rgba(255,255,255,0.01);margin-bottom:8px}
+
+    /* modal */
+    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(2,6,23,0.6);z-index:200}
+    .modal .card{background:var(--panel);padding:18px;border-radius:14px;max-width:600px;width:100%}
+
+    @media (max-width:980px){main.app{grid-template-columns:1fr;padding:12px} .panel.right{display:none}}
   </style>
 </head>
 <body>
   <header class="topbar">
-    <div class="logo">
-      <div class="mark">S</div>
-      <div>
-        <div>Shadow</div>
-        <div class="muted" style="font-weight:600;font-size:13px;">Social UI • Tema oscuro</div>
-      </div>
+    <div class="brand"><div class="mark">S</div><h1>Shadow</h1></div>
+    <div class="top-actions">
+      <button class="icon-btn" id="btnHome">🏠</button>
+      <button class="icon-btn" id="btnFeed">📰</button>
+      <button class="icon-btn notif-count" id="btnNotif">🔔<span id="notifBadge" style="display:none">0</span></button>
+      <button class="icon-btn" id="btnProfile">👤</button>
     </div>
-
-    <div style="flex:1"></div>
-
-    <div class="search pill" style="width:300px;">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden><path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path><circle cx="11" cy="11" r="6" stroke="currentColor" stroke-width="1.6"></circle></svg>
-      <input id="searchInput" placeholder="Buscar" style="background:transparent;border:0;outline:none;color:inherit;width:100%">
-    </div>
-
-    <button class="btn small-btn" id="newPostBtn">Crear</button>
   </header>
 
   <main class="app">
-    <aside class="panel sidebar">
-      <div class="profile">
+    <aside class="panel left">
+      <div class="profile-compact">
         <div class="avatar">SN</div>
         <div>
-          <div style="font-weight:700">Sebastián N.</div>
+          <div style="font-weight:800">Sebastián N.</div>
           <div class="muted">@sebastian</div>
         </div>
       </div>
 
-      <hr style="margin:14px 0;border:0;border-top:1px solid rgba(255,255,255,0.02)">
-
-      <div style="display:flex;flex-direction:column;gap:10px">
-        <div class="pill">Inicio</div>
-        <div class="pill">Explorar</div>
-        <div class="pill">Mensajes</div>
-        <div class="pill">Notificaciones</div>
+      <div class="nav-list" style="margin-top:14px">
+        <div class="nav-item active" data-target="home">Inicio</div>
+        <div class="nav-item" data-target="feed">Feed</div>
+        <div class="nav-item" data-target="notifications">Notificaciones</div>
+        <div class="nav-item" data-target="profiles">Perfiles</div>
       </div>
 
-      <hr style="margin:14px 0;border:0;border-top:1px solid rgba(255,255,255,0.02)">
+      <hr style="border:none;border-top:1px solid rgba(255,255,255,0.02);margin:12px 0">
 
-      <div class="muted">Sobre</div>
-      <p class="muted" style="font-size:13px">Interfaz oscura moderna construida solo con HTML, CSS y JavaScript. Responsive y accesible.</p>
+      <div>
+        <div style="font-weight:700">Tu actividad</div>
+        <div class="muted" id="stats">Publicaciones: 0 • Seguidores: 0</div>
+      </div>
     </aside>
 
     <section>
-      <div class="panel" style="margin-bottom:16px">
-        <div class="composer">
-          <div class="avatar">SN</div>
-          <div style="flex:1">
-            <textarea id="composer" placeholder="¿Qué estás pensando?" maxlength="400"></textarea>
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
-              <div class="muted">Máx 400 caracteres</div>
-              <div style="display:flex;gap:8px">
-                <button class="btn small-btn" id="publishBtn">Publicar</button>
-              </div>
-            </div>
+      <!-- HOME -->
+      <div id="home" class="panel active-section">
+        <h2>Inicio</h2>
+        <p class="muted">Crea una publicación y explora ejemplos reales simulados.</p>
+
+        <div class="composer" aria-label="Compositor">
+          <textarea id="postText" placeholder="¿Qué está pasando?"></textarea>
+          <div class="row">
+            <select id="imageSelect">
+              <option value="">Sin imagen</option>
+              <option value="https://picsum.photos/900/420?random=11">Atardecer</option>
+              <option value="https://picsum.photos/900/420?random=22">Calle</option>
+              <option value="https://picsum.photos/900/420?random=33">Montañas</option>
+              <option value="https://picsum.photos/900/420?random=44">Arquitectura</option>
+            </select>
+            <button class="btn" id="publish">Publicar</button>
+            <button class="btn ghost" id="clear">Limpiar</button>
+          </div>
+        </div>
+
+        <h3 style="margin-top:16px">Perfiles destacados</h3>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">
+          <!-- dynamic profiles injected -->
+          <div class="panel" style="width:200px;text-align:center">
+            <div class="avatar" style="margin:0 auto">AL</div>
+            <div style="font-weight:700;margin-top:8px">Alicia</div>
+            <div class="muted">@alicia</div>
+            <div class="muted" style="font-size:13px;margin-top:6px">Fotógrafa • Aventurera</div>
+            <div style="margin-top:8px"><button class="pill btnFollow" data-user="Alicia">Seguir</button></div>
+          </div>
+
+          <div class="panel" style="width:200px;text-align:center">
+            <div class="avatar" style="margin:0 auto">MR</div>
+            <div style="font-weight:700;margin-top:8px">Marcos</div>
+            <div class="muted">@marcos</div>
+            <div class="muted" style="font-size:13px;margin-top:6px">Desarrollador • Música</div>
+            <div style="margin-top:8px"><button class="pill btnFollow" data-user="Marcos">Seguir</button></div>
           </div>
         </div>
       </div>
 
-      <div id="feed" class="feed" aria-live="polite"></div>
+      <!-- FEED -->
+      <div id="feed" class="panel" style="display:none">
+        <h2>Feed</h2>
+        <div id="feedList" class="feed" aria-live="polite"></div>
+      </div>
+
+      <!-- NOTIFICATIONS -->
+      <div id="notifications" class="panel" style="display:none">
+        <h2>Notificaciones</h2>
+        <div class="notif-panel" id="notifPanel"></div>
+      </div>
+
+      <!-- PROFILES -->
+      <div id="profiles" class="panel" style="display:none">
+        <h2>Perfiles</h2>
+        <div id="profilesList"></div>
+      </div>
     </section>
 
     <aside class="panel right">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <div style="font-weight:700">Sugerencias</div>
-        <div class="muted">Ver todo</div>
-      </div>
-
-      <ul class="suggestions" style="list-style:none;padding:0;margin-top:12px">
-        <li><div style="display:flex;gap:12px"><div class="avatar" style="width:38px;height:38px;border-radius:10px">AL</div><div><div style="font-weight:700">Alicia</div><div class="muted">@alicia</div></div></div><button class="btn small-btn">Seguir</button></li>
-        <li><div style="display:flex;gap:12px"><div class="avatar" style="width:38px;height:38px;border-radius:10px">MR</div><div><div style="font-weight:700">Marcos</div><div class="muted">@mr</div></div></div><button class="btn small-btn">Seguir</button></li>
-      </ul>
-
-      <hr style="margin:12px 0;border:0;border-top:1px solid rgba(255,255,255,0.02)">
-      <div class="muted" style="font-size:13px">Actividad reciente</div>
-      <div style="margin-top:8px" class="muted">No hay actividad nueva</div>
+      <h3>Sugerencias</h3>
+      <div class="suggestion"><div class="profile-mini"><div class="avatar">SL</div><div><b>Sofía</b><div class="muted">@sofia</div></div></div><button class="pill btnFollow" data-user="Sofía">Seguir</button></div>
+      <hr style="border:none;border-top:1px solid rgba(255,255,255,0.02);margin:12px 0">
+      <h4>Actividad reciente</h4>
+      <div id="recentActivity" class="muted">Cargando actividad...</div>
     </aside>
   </main>
 
-  <template id="postTemplate">
-    <article class="post fade-in">
-      <div class="meta">
-        <div class="avatar small">SN</div>
-        <div>
-          <div class="author" style="font-weight:700">Nombre</div>
-          <div class="muted time">Hace 1h</div>
-        </div>
-      </div>
-      <div class="content">Texto</div>
-      <img class="media" src="" alt="">
-      <div class="actions">
-        <div class="action like" role="button" tabindex="0">❤️ <span class="likes">0</span></div>
-        <div class="action comment" role="button" tabindex="0">💬 <span class="comments">0</span></div>
-        <div class="action share" role="button" tabindex="0">🔗</div>
-      </div>
-    </article>
-  </template>
+  <!-- modal perfil -->
+  <div id="modal" class="modal">
+    <div class="card">
+      <button id="closeModal" style="float:right" class="btn ghost">Cerrar</button>
+      <div id="modalContent"></div>
+    </div>
+  </div>
 
   <script>
-    // Mock initial posts
-    const sample = [
-      {id:1, name:'Alicia', user:'@alicia', text:'Comenzando con el tema oscuro. Me encanta este estilo minimalista y moderno 😎.', time: '2h', likes:12, comments:3, media:''},
-      {id:2, name:'Marcos', user:'@mr', text:'Probando una imagen dentro de la interfaz. HTML + JS puro.', time: '6h', likes:6, comments:1, media:'https://picsum.photos/900/420?random=4'}
+    // --- Data (ejemplos) ---
+    const sampleProfiles = [
+      {id:1,name:'Alicia',user:'alicia',bio:'Fotógrafa. Capturando amaneceres y café.',followers:1240,following:210},
+      {id:2,name:'Marcos',user:'marcos',bio:'Dev frontend, amante del synthwave.',followers:980,following:300},
+      {id:3,name:'Sofía',user:'sofia',bio:'Diseñadora. Colores y tipografías.',followers:560,following:180}
     ];
 
-    const feed = document.getElementById('feed');
-    const tmpl = document.getElementById('postTemplate');
-    const composer = document.getElementById('composer');
-    const publishBtn = document.getElementById('publishBtn');
-    const newPostBtn = document.getElementById('newPostBtn');
-    const searchInput = document.getElementById('searchInput');
+    const samplePosts = [
+      {id:101,user:'Alicia',time:'2h',text:'Amanecer en la costa 🌅 — nunca deja de sorprenderme.',image:'https://picsum.photos/900/420?random=101',likes:128,comments:12},
+      {id:102,user:'Marcos',time:'4h',text:'Publicando una demo de UI en modo oscuro. ¿Qué opinan?',image:'https://picsum.photos/900/420?random=102',likes:64,comments:8},
+      {id:103,user:'Sofía',time:'6h',text:'Nueva paleta lista — inspiración urbana.',image:'',likes:23,comments:4},
+      {id:104,user:'Alicia',time:'1d',text:'Explorando la ciudad con mi cámara 📸',image:'https://picsum.photos/900/420?random=103',likes:201,comments:34},
+      {id:105,user:'Marcos',time:'2d',text:'Música nueva en mi playlist — recomendada para concentrarse.',image:'',likes:42,comments:5}
+    ];
 
-    // storage
-    const STORAGE_KEY = 'shadow_feed_v1';
-    function load(){
-      const raw = localStorage.getItem(STORAGE_KEY);
-      return raw ? JSON.parse(raw) : sample.slice();
+    // persistent storage
+    let posts = JSON.parse(localStorage.getItem('ss_posts')) || samplePosts.slice();
+    let notifications = JSON.parse(localStorage.getItem('ss_notifs')) || [
+      {id:1,text:'Alicia comenzó a seguirte',time:'3h'},
+      {id:2,text:'Marcos comentó tu publicación',time:'6h'}
+    ];
+    let followers = JSON.parse(localStorage.getItem('ss_followers')) || {Alicia:true,Marcos:false,Sofía:false};
+
+    // elements
+    const navItems = document.querySelectorAll('.nav-item');
+    const sections = {home:document.getElementById('home'),feed:document.getElementById('feed'),notifications:document.getElementById('notifications'),profiles:document.getElementById('profiles')};
+    const feedList = document.getElementById('feedList');
+    const notifPanel = document.getElementById('notifPanel');
+    const notifBadge = document.getElementById('notifBadge');
+    const profilesList = document.getElementById('profilesList');
+    const recentActivity = document.getElementById('recentActivity');
+
+    function switchTo(target){
+      Object.values(sections).forEach(s=>s.style.display='none');
+      sections[target].style.display='block';
+      navItems.forEach(n=>n.classList.toggle('active', n.dataset.target===target));
     }
-    function save(arr){ localStorage.setItem(STORAGE_KEY, JSON.stringify(arr)); }
 
-    let posts = load();
+    navItems.forEach(n=>n.addEventListener('click',()=>switchTo(n.dataset.target)));
+    document.getElementById('btnHome').addEventListener('click',()=>switchTo('home'));
+    document.getElementById('btnFeed').addEventListener('click',()=>switchTo('feed'));
+    document.getElementById('btnNotif').addEventListener('click',()=>switchTo('notifications'));
 
-    function renderPosts(filter=''){
-      feed.innerHTML='';
-      const list = posts.filter(p => (p.name + ' ' + p.text + ' ' + p.user).toLowerCase().includes(filter.toLowerCase()));
-      list.slice().reverse().forEach(p => {
-        const node = tmpl.content.cloneNode(true);
-        const article = node.querySelector('.post');
-        article.dataset.id = p.id;
-        article.querySelector('.author').textContent = p.name + ' ' + p.user;
-        article.querySelector('.time').textContent = p.time;
-        const content = article.querySelector('.content');
-        content.textContent = p.text;
-        const img = article.querySelector('img.media');
-        if(p.media) img.src = p.media; else img.remove();
-        article.querySelector('.likes').textContent = p.likes||0;
-        article.querySelector('.comments').textContent = p.comments||0;
-
-        // actions
-        const likeBtn = article.querySelector('.like');
-        likeBtn.addEventListener('click', () => toggleLike(p.id, likeBtn));
-        likeBtn.addEventListener('keypress', (e)=>{ if(e.key==='Enter') toggleLike(p.id, likeBtn)});
-
-        const commentBtn = article.querySelector('.comment');
-        commentBtn.addEventListener('click', () => alert('Abrir panel de comentarios (demo)'));
-
-        feed.appendChild(node);
+    // render feed
+    function renderFeed(){
+      feedList.innerHTML='';
+      posts.slice().reverse().forEach(p=>{
+        const node = document.createElement('article'); node.className='post';
+        node.dataset.id = p.id;
+        node.innerHTML = `
+          <div class="meta">
+            <div class="avatar">${p.user[0].toUpperCase()}</div>
+            <div class="who">
+              <strong>${p.user}</strong>
+              <small class="muted"> • ${p.time || 'Ahora'}</small>
+            </div>
+            <div style="margin-left:auto;color:var(--muted);font-size:13px">ID:${p.id}</div>
+          </div>
+          <div class="content">${escapeHtml(p.text)}</div>
+          ${p.image?`<img class='media' src='${p.image}' alt='media'>`:''}
+          <div class="actions">
+            <div class="action like" data-id="${p.id}">❤️ <span class='likes'>${p.likes}</span></div>
+            <div class="action comment">💬 <span class='comments'>${p.comments}</span></div>
+            <div class="action share">🔗</div>
+            <div style="margin-left:auto;display:flex;gap:8px"><button class='btn ghost btnOpenProfile' data-user='${p.user}'>Perfil</button><button class='btn ghost btnDelete' data-id='${p.id}'>Eliminar</button></div>
+          </div>
+        `;
+        feedList.appendChild(node);
       });
-
-      if(list.length === 0){
-        const empty = document.createElement('div'); empty.className='muted'; empty.textContent='No se encontraron publicaciones.'; feed.appendChild(empty);
-      }
+      updateStats();
     }
 
-    function toggleLike(id, btn){
-      const idx = posts.findIndex(p => p.id === id);
-      if(idx === -1) return;
-      const p = posts[idx];
-      p.liked = !p.liked;
-      p.likes = (p.likes || 0) + (p.liked ? 1 : -1);
-      save(posts);
-      btn.classList.toggle('active', p.liked);
-      btn.querySelector('.likes').textContent = p.likes;
-    }
+    // escape helpers
+    function escapeHtml(text){ return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-    function createPost(text, media=''){
-      const id = Date.now();
-      const post = {id, name:'Tú', user:'@tú', text, time:'Ahora', likes:0, comments:0, media};
-      posts.push(post);
-      save(posts);
-      renderPosts(searchInput.value);
-      composer.value='';
-    }
-
-    publishBtn.addEventListener('click', () => {
-      const txt = composer.value.trim();
-      if(!txt) return alert('Escribe algo primero.');
-      createPost(txt);
-    });
-
-    newPostBtn.addEventListener('click', () => {
-      composer.focus();
-      composer.scrollIntoView({behavior:'smooth', block:'center'});
-    });
-
-    searchInput.addEventListener('input', (e) => renderPosts(e.target.value));
-
-    // keyboard shortcut: N to focus composer
-    window.addEventListener('keydown', (e) => {
-      if(e.key.toLowerCase() === 'n' && (document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA')){
-        composer.focus();
-        e.preventDefault();
+    // likes
+    feedList.addEventListener('click',e=>{
+      const likeBtn = e.target.closest('.like');
+      const deleteBtn = e.target.closest('.btnDelete');
+      const profileBtn = e.target.closest('.btnOpenProfile');
+      if(likeBtn){
+        const id = Number(likeBtn.dataset.id);
+        const idx = posts.findIndex(x=>x.id===id);
+        if(idx>-1){ posts[idx].likes++; saveAll(); renderFeed(); pushNotif(`${posts[idx].user} recibió un like`); }
+      } else if(deleteBtn){
+        const id = Number(deleteBtn.dataset.id);
+        if(confirm('Eliminar publicación?')){ posts = posts.filter(p=>p.id!==id); saveAll(); renderFeed(); pushNotif('Eliminaste una publicación'); }
+      } else if(profileBtn){
+        const user = profileBtn.dataset.user; openProfile(user);
       }
     });
+
+    // publishing
+    document.getElementById('publish').addEventListener('click',()=>{
+      const txt = document.getElementById('postText').value.trim();
+      const img = document.getElementById('imageSelect').value;
+      if(!txt) return alert('Escribe algo antes de publicar');
+      const newP = {id:Date.now(), user:'Sebastián', time:'Ahora', text:txt, image:img || '', likes:0, comments:0};
+      posts.push(newP); saveAll(); renderFeed(); pushNotif('Publicaste algo nuevo');
+      document.getElementById('postText').value=''; document.getElementById('imageSelect').value='';
+      switchTo('feed');
+    });
+    document.getElementById('clear').addEventListener('click',()=>{ document.getElementById('postText').value=''; document.getElementById('imageSelect').value=''; });
+
+    // notifications
+    function renderNotifs(){
+      notifPanel.innerHTML = notifications.map(n=>`<div class='notif-item'><div style='font-weight:700'>${escapeHtml(n.text)}</div><div class='muted' style='font-size:13px'>${n.time||''}</div></div>`).join('');
+      notifBadge.style.display = notifications.length ? 'inline-block' : 'none';
+      notifBadge.textContent = notifications.length;
+      localStorage.setItem('ss_notifs', JSON.stringify(notifications));
+    }
+
+    function pushNotif(text){
+      notifications.unshift({id:Date.now(), text, time:'Ahora'});
+      if(notifications.length>50) notifications.pop();
+      renderNotifs();
+    }
+
+    // profiles
+    function renderProfiles(){
+      profilesList.innerHTML = sampleProfiles.map(p=>`<div class='panel' style='margin-bottom:10px'><div style='display:flex;align-items:center;gap:10px'><div class='avatar'>${p.name[0]}</div><div><strong>${p.name}</strong><div class='muted'>@${p.user}</div></div><div style='margin-left:auto'><button class='btn ghost btnOpenProfile' data-user='${p.name}'>Ver</button>&nbsp;<button class='pill btnFollow' data-user='${p.name}'>${followers[p.name]? 'Siguiendo':'Seguir'}</button></div></div><p class='muted' style='margin-top:8px'>${p.bio}</p></div>`).join('');
+      document.querySelectorAll('.btnFollow').forEach(b=>{
+        b.addEventListener('click',()=>{
+          const u = b.dataset.user; followers[u]=!followers[u]; b.textContent = followers[u]? 'Siguiendo':'Seguir'; localStorage.setItem('ss_followers',JSON.stringify(followers)); pushNotif(`${u} ahora ${followers[u] ? 'seguido' : 'no seguido'}`); updateStats();
+        });
+      });
+      document.querySelectorAll('.btnOpenProfile').forEach(b=>b.addEventListener('click',()=>openProfile(b.dataset.user)));
+    }
+
+    // open profile modal
+    const modal = document.getElementById('modal'); const modalContent = document.getElementById('modalContent');
+    function openProfile(name){
+      const p = sampleProfiles.find(x=>x.name===name) || sampleProfiles.find(x=>x.name.toLowerCase()===name.toLowerCase()) || {name};
+      modalContent.innerHTML = `<div style='display:flex;gap:12px;align-items:center'><div class='avatar' style='width:72px;height:72px;border-radius:14px'>${p.name[0]}</div><div><h3 style='margin:0'>${p.name}</h3><div class='muted'>@${p.user||p.name.toLowerCase()}</div></div></div><p style='margin-top:12px'>${p.bio||'—'}</p><div style='margin-top:8px' class='muted'>Seguidores: ${p.followers||0} • Siguiendo: ${p.following||0}</div><div style='margin-top:12px'><button class='btn btnFollow modalFollow' data-user='${p.name}'>${followers[p.name]? 'Siguiendo':'Seguir'}</button></div>`;
+      document.querySelector('.modal').style.display='flex';
+      document.querySelectorAll('.modalFollow').forEach(b=>b.addEventListener('click',()=>{ const u=b.dataset.user; followers[u]=!followers[u]; b.textContent = followers[u]? 'Siguiendo':'Seguir'; localStorage.setItem('ss_followers',JSON.stringify(followers)); pushNotif(`${u} ahora ${followers[u]? 'seguido' : 'no seguido'}`); updateStats(); }))
+    }
+    document.getElementById('closeModal').addEventListener('click',()=>document.querySelector('.modal').style.display='none');
+    modal.addEventListener('click',(e)=>{ if(e.target===modal) modal.style.display='none'; });
+
+    // save
+    function saveAll(){ localStorage.setItem('ss_posts', JSON.stringify(posts)); }
+
+    function updateStats(){
+      document.getElementById('stats').textContent = `Publicaciones: ${posts.length} • Seguidores: ${Object.values(followers).filter(Boolean).length}`;
+      recentActivity.textContent = `${posts.slice(-3).reverse().map(p=>p.user+': '+(p.text.slice(0,30))+'...').join(' • ')}`;
+    }
 
     // initial render
-    renderPosts();
+    function boot(){ renderFeed(); renderNotifs(); renderProfiles(); updateStats(); }
+    boot();
 
-    // tiny accessibility + progressive enhancement
-    (function quickHints(){
-      // add aria labels
-      document.querySelectorAll('.action').forEach(a=>a.setAttribute('aria-pressed','false'));
-    })();
+    // simulate activity: every 18s add a simulated notification (random)
+    setInterval(()=>{
+      const acts = [
+        'Alicia comentó tu publicación', 'Marcos le dio like a una publicación', 'Sofía empezó a seguirte', 'Alicia compartió una publicación', 'Marcos actualizó su perfil'
+      ];
+      const pick = acts[Math.floor(Math.random()*acts.length)];
+      pushNotif(pick);
+    },18000);
+
+    // expose export/import for debugging via console
+    window.SS = {posts,notifications,followers,exportJSON:()=>JSON.stringify({posts,notifications,followers},null,2)};
+
   </script>
 </body>
 </html>
+
+
+
