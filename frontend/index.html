@@ -1,128 +1,311 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Mini Social App</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Social UI — Tema Oscuro</title>
   <style>
-    body {
-      margin: 0;
-      font-family: "Segoe UI", Tahoma, sans-serif;
-      background-color: #f4f6f8;
+    :root{
+      --bg:#0b0b0c;
+      --panel:#0f1113;
+      --muted:#9aa3ad;
+      --accent:#7c5cff;
+      --glass: rgba(255,255,255,0.03);
+      --radius:14px;
+      --card-radius:16px;
+      --shadow: 0 6px 18px rgba(2,6,23,0.6);
+      --glass-border: rgba(255,255,255,0.04);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;}
+    body{
+      margin:0;
+      background:linear-gradient(180deg,#020203 0%, var(--bg) 100%);
+      color:#e6eef6;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
     }
 
-    /* Header */
-    header {
-      background: #080808;
-      color: white;
-      padding: 15px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    /* Layout */
+    .app{
+      display:grid;
+      grid-template-columns:320px 1fr 320px;
+      gap:22px;
+      max-width:1200px;
+      margin:28px auto;
+      padding:20px;
+      min-height:calc(100vh - 56px);
     }
 
-    header h1 {
-      margin: 0;
-      font-size: 20px;
+    header.topbar{
+      position:sticky; top:0; z-index:40;
+      display:flex; align-items:center; gap:16px;
+      padding:12px 24px; margin:12px auto;
+      max-width:1200px; border-radius:18px; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(6px);
+    }
+    .logo{
+      display:flex; gap:12px; align-items:center;
+      font-weight:700; letter-spacing:0.4px;
+    }
+    .logo .mark{width:36px; height:36px; border-radius:10px; background:linear-gradient(135deg,var(--accent), #3ec7ff); display:grid; place-items:center; font-weight:800;}
+
+    /* Left & Right panels */
+    .panel{
+      background:var(--panel);
+      border-radius:var(--radius);
+      padding:16px;
+      box-shadow: var(--shadow);
+      border:1px solid var(--glass-border);
+    }
+    .sidebar .profile{
+      display:flex; gap:12px; align-items:center;
+    }
+    .avatar{width:56px; height:56px; border-radius:12px; background:linear-gradient(180deg,#1f2933,#0b0f13); display:inline-grid; place-items:center; font-weight:700; color:var(--accent);}
+    .muted{color:var(--muted); font-size:13px}
+
+    /* Composer */
+    .composer{display:flex; gap:12px; align-items:flex-start}
+    textarea{flex:1; min-height:72px; resize:none; background:var(--glass); border-radius:12px; border:1px solid rgba(255,255,255,0.03); padding:12px; color:inherit}
+    .btn{background:var(--accent); color:#07101a; border:none; padding:10px 14px; border-radius:10px; font-weight:700; cursor:pointer}
+    .small-btn{padding:8px 10px; font-size:13px}
+
+    /* Feed */
+    .feed{display:flex; flex-direction:column; gap:16px}
+    .post{background:linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01)); padding:14px; border-radius:var(--card-radius); border:1px solid var(--glass-border);}
+    .post .meta{display:flex; gap:12px; align-items:center}
+    .post .content{margin-top:10px; color:#dfe9f6}
+    .post img.media{width:100%; border-radius:10px; margin-top:12px; max-height:420px; object-fit:cover}
+    .actions{display:flex; gap:12px; margin-top:12px; align-items:center}
+    .action{display:inline-flex; gap:8px; align-items:center; padding:8px 10px; border-radius:10px; cursor:pointer; user-select:none}
+
+    /* Right suggestions */
+    .suggestions li{display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px dashed rgba(255,255,255,0.02);} 
+
+    /* Responsive */
+    @media (max-width:980px){
+      .app{grid-template-columns:1fr; padding:12px}
+      header.topbar{border-radius:12px}
+      .panel.right{display:none}
     }
 
-    nav a {
-       color: white;
-      margin-left: 15px;
-      text-decoration: none;
-    }
-    nav a:hover {
-      text-decoration: underline;
-    }
+    /* Tiny extras */
+    .pill{background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:6px 10px; border-radius:999px; font-size:13px}
+    .search{display:flex; gap:8px; align-items:center; background:var(--glass); padding:8px; border-radius:12px}
 
-    /* Main container */
-    .container {
-      max-width: 600px;
-      margin: 20px auto;
-      background: white;
-      border-radius: 10px;
-      padding: 20px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-
-    .user-info {
-      display: flex;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-    .user-info img {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      margin-right: 10px;
-    }
-
-    /* Form */
-    textarea {
-      width: 100%;
-      border-radius: 8px;
-      padding: 10px;
-      border: 1px solid #ccc;
-      resize: none;
-    }
-    button {
-      margin-top: 10px;
-      padding: 10px 20px;
-      background: #080808;
-      border: none;
-      border-radius: 8px;
-      color: white;
-      cursor: pointer;
-      font-size: 15px;
-    }
-    button:hover {
-      background: #080808;
-    }
-
-    /* Posts */
-    .post {
-      border-top: 1px solid #eee;
-      padding: 15px 0;
-    }
-    .post .author {
-      font-weight: bold;
-      color: #7e7e7e;
-    }
-    .post .date {
-      font-size: 12px;
-      color: #080808;
-    }
-    .post p {
-      margin: 5px 0 0 0;
-    }
+    /* subtle animation */
+    .like.active{transform:scale(1.06)}
+    .fade-in{animation:fadeIn .28s ease both}
+    @keyframes fadeIn{from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none}}
   </style>
 </head>
 <body>
-  <!-- Header -->
-  <header>
-    <h1>Mini Social</h1>
-    <nav>
-      <a href="#">Home</a>
-      <a href="#">Perfil</a>
-      <a href="#">Logout</a>
-    </nav>
-  </header>
-
-  <!-- Main -->
-  <div class="container">
-    <div class="user-info">
-      <img src="https://i.pravatar.cc/50?img=3" alt="Avatar">
+  <header class="topbar">
+    <div class="logo">
+      <div class="mark">S</div>
       <div>
-        <p><strong id="username">Juan Pérez</strong></p>
-        <small>Usuario logueado</small>
+        <div>Shadow</div>
+        <div class="muted" style="font-weight:600;font-size:13px;">Social UI • Tema oscuro</div>
       </div>
     </div>
 
-    <textarea id="mensaje" placeholder="¿Qué estás pensando?"></textarea>
-    <button onclick="publicar()">Publicar</button>
+    <div style="flex:1"></div>
 
-    <div id="posts"></div>
-  </div>
+    <div class="search pill" style="width:300px;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden><path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path><circle cx="11" cy="11" r="6" stroke="currentColor" stroke-width="1.6"></circle></svg>
+      <input id="searchInput" placeholder="Buscar" style="background:transparent;border:0;outline:none;color:inherit;width:100%">
+    </div>
 
-  <script src="script.js"></script>
+    <button class="btn small-btn" id="newPostBtn">Crear</button>
+  </header>
+
+  <main class="app">
+    <aside class="panel sidebar">
+      <div class="profile">
+        <div class="avatar">SN</div>
+        <div>
+          <div style="font-weight:700">Sebastián N.</div>
+          <div class="muted">@sebastian</div>
+        </div>
+      </div>
+
+      <hr style="margin:14px 0;border:0;border-top:1px solid rgba(255,255,255,0.02)">
+
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div class="pill">Inicio</div>
+        <div class="pill">Explorar</div>
+        <div class="pill">Mensajes</div>
+        <div class="pill">Notificaciones</div>
+      </div>
+
+      <hr style="margin:14px 0;border:0;border-top:1px solid rgba(255,255,255,0.02)">
+
+      <div class="muted">Sobre</div>
+      <p class="muted" style="font-size:13px">Interfaz oscura moderna construida solo con HTML, CSS y JavaScript. Responsive y accesible.</p>
+    </aside>
+
+    <section>
+      <div class="panel" style="margin-bottom:16px">
+        <div class="composer">
+          <div class="avatar">SN</div>
+          <div style="flex:1">
+            <textarea id="composer" placeholder="¿Qué estás pensando?" maxlength="400"></textarea>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
+              <div class="muted">Máx 400 caracteres</div>
+              <div style="display:flex;gap:8px">
+                <button class="btn small-btn" id="publishBtn">Publicar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="feed" class="feed" aria-live="polite"></div>
+    </section>
+
+    <aside class="panel right">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div style="font-weight:700">Sugerencias</div>
+        <div class="muted">Ver todo</div>
+      </div>
+
+      <ul class="suggestions" style="list-style:none;padding:0;margin-top:12px">
+        <li><div style="display:flex;gap:12px"><div class="avatar" style="width:38px;height:38px;border-radius:10px">AL</div><div><div style="font-weight:700">Alicia</div><div class="muted">@alicia</div></div></div><button class="btn small-btn">Seguir</button></li>
+        <li><div style="display:flex;gap:12px"><div class="avatar" style="width:38px;height:38px;border-radius:10px">MR</div><div><div style="font-weight:700">Marcos</div><div class="muted">@mr</div></div></div><button class="btn small-btn">Seguir</button></li>
+      </ul>
+
+      <hr style="margin:12px 0;border:0;border-top:1px solid rgba(255,255,255,0.02)">
+      <div class="muted" style="font-size:13px">Actividad reciente</div>
+      <div style="margin-top:8px" class="muted">No hay actividad nueva</div>
+    </aside>
+  </main>
+
+  <template id="postTemplate">
+    <article class="post fade-in">
+      <div class="meta">
+        <div class="avatar small">SN</div>
+        <div>
+          <div class="author" style="font-weight:700">Nombre</div>
+          <div class="muted time">Hace 1h</div>
+        </div>
+      </div>
+      <div class="content">Texto</div>
+      <img class="media" src="" alt="">
+      <div class="actions">
+        <div class="action like" role="button" tabindex="0">❤️ <span class="likes">0</span></div>
+        <div class="action comment" role="button" tabindex="0">💬 <span class="comments">0</span></div>
+        <div class="action share" role="button" tabindex="0">🔗</div>
+      </div>
+    </article>
+  </template>
+
+  <script>
+    // Mock initial posts
+    const sample = [
+      {id:1, name:'Alicia', user:'@alicia', text:'Comenzando con el tema oscuro. Me encanta este estilo minimalista y moderno 😎.', time: '2h', likes:12, comments:3, media:''},
+      {id:2, name:'Marcos', user:'@mr', text:'Probando una imagen dentro de la interfaz. HTML + JS puro.', time: '6h', likes:6, comments:1, media:'https://picsum.photos/900/420?random=4'}
+    ];
+
+    const feed = document.getElementById('feed');
+    const tmpl = document.getElementById('postTemplate');
+    const composer = document.getElementById('composer');
+    const publishBtn = document.getElementById('publishBtn');
+    const newPostBtn = document.getElementById('newPostBtn');
+    const searchInput = document.getElementById('searchInput');
+
+    // storage
+    const STORAGE_KEY = 'shadow_feed_v1';
+    function load(){
+      const raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : sample.slice();
+    }
+    function save(arr){ localStorage.setItem(STORAGE_KEY, JSON.stringify(arr)); }
+
+    let posts = load();
+
+    function renderPosts(filter=''){
+      feed.innerHTML='';
+      const list = posts.filter(p => (p.name + ' ' + p.text + ' ' + p.user).toLowerCase().includes(filter.toLowerCase()));
+      list.slice().reverse().forEach(p => {
+        const node = tmpl.content.cloneNode(true);
+        const article = node.querySelector('.post');
+        article.dataset.id = p.id;
+        article.querySelector('.author').textContent = p.name + ' ' + p.user;
+        article.querySelector('.time').textContent = p.time;
+        const content = article.querySelector('.content');
+        content.textContent = p.text;
+        const img = article.querySelector('img.media');
+        if(p.media) img.src = p.media; else img.remove();
+        article.querySelector('.likes').textContent = p.likes||0;
+        article.querySelector('.comments').textContent = p.comments||0;
+
+        // actions
+        const likeBtn = article.querySelector('.like');
+        likeBtn.addEventListener('click', () => toggleLike(p.id, likeBtn));
+        likeBtn.addEventListener('keypress', (e)=>{ if(e.key==='Enter') toggleLike(p.id, likeBtn)});
+
+        const commentBtn = article.querySelector('.comment');
+        commentBtn.addEventListener('click', () => alert('Abrir panel de comentarios (demo)'));
+
+        feed.appendChild(node);
+      });
+
+      if(list.length === 0){
+        const empty = document.createElement('div'); empty.className='muted'; empty.textContent='No se encontraron publicaciones.'; feed.appendChild(empty);
+      }
+    }
+
+    function toggleLike(id, btn){
+      const idx = posts.findIndex(p => p.id === id);
+      if(idx === -1) return;
+      const p = posts[idx];
+      p.liked = !p.liked;
+      p.likes = (p.likes || 0) + (p.liked ? 1 : -1);
+      save(posts);
+      btn.classList.toggle('active', p.liked);
+      btn.querySelector('.likes').textContent = p.likes;
+    }
+
+    function createPost(text, media=''){
+      const id = Date.now();
+      const post = {id, name:'Tú', user:'@tú', text, time:'Ahora', likes:0, comments:0, media};
+      posts.push(post);
+      save(posts);
+      renderPosts(searchInput.value);
+      composer.value='';
+    }
+
+    publishBtn.addEventListener('click', () => {
+      const txt = composer.value.trim();
+      if(!txt) return alert('Escribe algo primero.');
+      createPost(txt);
+    });
+
+    newPostBtn.addEventListener('click', () => {
+      composer.focus();
+      composer.scrollIntoView({behavior:'smooth', block:'center'});
+    });
+
+    searchInput.addEventListener('input', (e) => renderPosts(e.target.value));
+
+    // keyboard shortcut: N to focus composer
+    window.addEventListener('keydown', (e) => {
+      if(e.key.toLowerCase() === 'n' && (document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA')){
+        composer.focus();
+        e.preventDefault();
+      }
+    });
+
+    // initial render
+    renderPosts();
+
+    // tiny accessibility + progressive enhancement
+    (function quickHints(){
+      // add aria labels
+      document.querySelectorAll('.action').forEach(a=>a.setAttribute('aria-pressed','false'));
+    })();
+  </script>
 </body>
 </html>
