@@ -5,67 +5,28 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Shadow Social — Demo Completa</title>
   <style>
-    :root{
-      --bg:#0b0b0c; --panel:#111214; --muted:#9aa3ad; --accent:#7c5cff; --accent2:#3a9bdc;
-      --radius:14px; --card-radius:16px; --shadow:0 8px 24px rgba(2,6,23,0.6);
-      font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
-    }
-    *{box-sizing:border-box}
-    body{margin:0; min-height:100vh; background:linear-gradient(180deg,#050506,#0b0b0c); color:#e9f0f7}
-
+    /* --- Estilos existentes, sin cambios --- */
+    :root{ --bg:#0b0b0c; --panel:#111214; --muted:#9aa3ad; --accent:#7c5cff; --accent2:#3a9bdc; --radius:14px; --card-radius:16px; --shadow:0 8px 24px rgba(2,6,23,0.6); font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; }
+    *{box-sizing:border-box} body{margin:0; min-height:100vh; background:linear-gradient(180deg,#050506,#0b0b0c); color:#e9f0f7}
     header.topbar{position:sticky;top:0;display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:#0f1012;box-shadow:var(--shadow);z-index:60}
-    .brand{display:flex;gap:12px;align-items:center}
-    .mark{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-weight:800}
-    .brand h1{margin:0;font-size:18px}
-
-    .top-actions{display:flex;gap:12px;align-items:center}
-    .icon-btn{background:transparent;border:0;color:inherit;padding:8px;border-radius:10px;cursor:pointer;font-size:18px}
-    .notif-count{position:relative}
-    .notif-count span{position:absolute;top:-6px;right:-8px;background:var(--accent2);color:#04121a;border-radius:50%;padding:2px 6px;font-size:11px;font-weight:700}
-
-    main.app{max-width:1200px;margin:22px auto;padding:18px;display:grid;grid-template-columns:280px 1fr 320px;gap:20px}
+    .brand{display:flex;gap:12px;align-items:center} .mark{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-weight:800} .brand h1{margin:0;font-size:18px} 
+    .top-actions{display:flex;gap:12px;align-items:center} .icon-btn{background:transparent;border:0;color:inherit;padding:8px;border-radius:10px;cursor:pointer;font-size:18px} 
+    .notif-count{position:relative} .notif-count span{position:absolute;top:-6px;right:-8px;background:var(--accent2);color:#04121a;border-radius:50%;padding:2px 6px;font-size:11px;font-weight:700} 
+    main.app{max-width:1200px;margin:22px auto;padding:18px;display:grid;grid-template-columns:280px 1fr 320px;gap:20px} 
     .panel{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:14px;border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid rgba(255,255,255,0.03)}
-
-    /* left */
-    .profile-compact{display:flex;gap:12px;align-items:center}
-    .avatar{width:56px;height:56px;border-radius:12px;background:#101316;display:grid;place-items:center;font-weight:800;color:var(--accent)}
-    .muted{color:var(--muted)}
-    .nav-list{display:flex;flex-direction:column;gap:8px;margin-top:12px}
-    .nav-item{padding:8px 10px;border-radius:10px;cursor:pointer}
-    .nav-item.active{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#04121a;font-weight:700}
-
+    /* left panel */
+    .profile-compact{display:flex;gap:12px;align-items:center} .avatar{width:56px;height:56px;border-radius:12px;background:#101316;display:grid;place-items:center;font-weight:800;color:var(--accent)} .muted{color:var(--muted)}
+    .nav-list{display:flex;flex-direction:column;gap:8px;margin-top:12px} .nav-item{padding:8px 10px;border-radius:10px;cursor:pointer} .nav-item.active{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#04121a;font-weight:700} 
     /* composer */
-    .composer{display:flex;gap:12px;flex-direction:column}
-    .composer textarea{min-height:72px;background:#0e0f11;border:1px solid rgba(255,255,255,0.03);border-radius:12px;padding:10px;color:inherit;resize:none}
-    .composer .row{display:flex;gap:8px;align-items:center}
-    .btn{background:var(--accent);border:0;padding:8px 12px;border-radius:10px;color:#04121a;font-weight:800;cursor:pointer}
-    .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.03);color:var(--muted)}
-
+    .composer{display:flex;gap:12px;flex-direction:column} .composer textarea{min-height:72px;background:#0e0f11;border:1px solid rgba(255,255,255,0.03);border-radius:12px;padding:10px;color:inherit;resize:none} 
+    .composer .row{display:flex;gap:8px;align-items:center} .btn{background:var(--accent);border:0;padding:8px 12px;border-radius:10px;color:#04121a;font-weight:800;cursor:pointer} .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.03);color:var(--muted)} 
     /* feed */
-    .feed{display:flex;flex-direction:column}
-    .post{background:linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01));padding:14px;border-radius:14px;margin-bottom:12px;border:1px solid rgba(255,255,255,0.02)}
-    .post .meta{display:flex;gap:12px;align-items:flex-start}
-    .post .meta .who{display:flex;flex-direction:column}
-    .post .content{margin-top:10px;line-height:1.45}
-    .post img.media{width:100%;border-radius:12px;margin-top:12px;max-height:420px;object-fit:cover}
-    .post .meta small{color:var(--muted)}
-
-    .post .actions{display:flex;align-items:center;gap:10px;margin-top:10px}
-    .action{display:inline-flex;gap:8px;align-items:center;padding:8px;border-radius:10px;cursor:pointer}
-    .action.like.active{background:rgba(124,92,255,0.12)}
-
-    /* right */
-    .suggestion{display:flex;align-items:center;justify-content:space-between;padding:8px;border-radius:10px;margin-bottom:8px}
-    .profile-mini{display:flex;gap:10px;align-items:center}
-
-    /* notifications panel */
-    .notif-panel{max-height:320px;overflow:auto}
-    .notif-item{padding:10px;border-radius:10px;background:rgba(255,255,255,0.01);margin-bottom:8px}
-
-    /* modal */
-    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(2,6,23,0.6);z-index:200}
-    .modal .card{background:var(--panel);padding:18px;border-radius:14px;max-width:600px;width:100%}
-
+    .feed{display:flex;flex-direction:column} .post{background:linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01));padding:14px;border-radius:14px;margin-bottom:12px;border:1px solid rgba(255,255,255,0.02)} 
+    .post .meta{display:flex;gap:12px;align-items:flex-start} .post .meta .who{display:flex;flex-direction:column} .post .content{margin-top:10px;line-height:1.45} 
+    .post img.media{width:100%;border-radius:12px;margin-top:12px;max-height:420px;object-fit:cover} .post .meta small{color:var(--muted)} .post .actions{display:flex;align-items:center;gap:10px;margin-top:10px} .action{display:inline-flex;gap:8px;align-items:center;padding:8px;border-radius:10px;cursor:pointer} .action.like.active{background:rgba(124,92,255,0.12)} 
+    /* right panel */ .suggestion{display:flex;align-items:center;justify-content:space-between;padding:8px;border-radius:10px;margin-bottom:8px} .profile-mini{display:flex;gap:10px;align-items:center} 
+    /* notifications */ .notif-panel{max-height:320px;overflow:auto} .notif-item{padding:10px;border-radius:10px;background:rgba(255,255,255,0.01);margin-bottom:8px} 
+    /* modal */ .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(2,6,23,0.6);z-index:200} .modal .card{background:var(--panel);padding:18px;border-radius:14px;max-width:600px;width:100%} 
     @media (max-width:980px){main.app{grid-template-columns:1fr;padding:12px} .panel.right{display:none}}
   </style>
 </head>
@@ -81,6 +42,7 @@
   </header>
 
   <main class="app">
+    <!-- left panel -->
     <aside class="panel left">
       <div class="profile-compact">
         <div class="avatar">SN</div>
@@ -89,28 +51,25 @@
           <div class="muted">@sebastian</div>
         </div>
       </div>
-
       <div class="nav-list" style="margin-top:14px">
         <div class="nav-item active" data-target="home">Inicio</div>
         <div class="nav-item" data-target="feed">Feed</div>
         <div class="nav-item" data-target="notifications">Notificaciones</div>
         <div class="nav-item" data-target="profiles">Perfiles</div>
       </div>
-
       <hr style="border:none;border-top:1px solid rgba(255,255,255,0.02);margin:12px 0">
-
       <div>
         <div style="font-weight:700">Tu actividad</div>
         <div class="muted" id="stats">Publicaciones: 0 • Seguidores: 0</div>
       </div>
     </aside>
 
+    <!-- main content -->
     <section>
       <!-- HOME -->
       <div id="home" class="panel active-section">
         <h2>Inicio</h2>
         <p class="muted">Crea una publicación y explora ejemplos reales simulados.</p>
-
         <div class="composer" aria-label="Compositor">
           <textarea id="postText" placeholder="¿Qué está pasando?"></textarea>
           <div class="row">
@@ -125,26 +84,8 @@
             <button class="btn ghost" id="clear">Limpiar</button>
           </div>
         </div>
-
         <h3 style="margin-top:16px">Perfiles destacados</h3>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">
-          <!-- dynamic profiles injected -->
-          <div class="panel" style="width:200px;text-align:center">
-            <div class="avatar" style="margin:0 auto">AL</div>
-            <div style="font-weight:700;margin-top:8px">Alicia</div>
-            <div class="muted">@alicia</div>
-            <div class="muted" style="font-size:13px;margin-top:6px">Fotógrafa • Aventurera</div>
-            <div style="margin-top:8px"><button class="pill btnFollow" data-user="Alicia">Seguir</button></div>
-          </div>
-
-          <div class="panel" style="width:200px;text-align:center">
-            <div class="avatar" style="margin:0 auto">MR</div>
-            <div style="font-weight:700;margin-top:8px">Marcos</div>
-            <div class="muted">@marcos</div>
-            <div class="muted" style="font-size:13px;margin-top:6px">Desarrollador • Música</div>
-            <div style="margin-top:8px"><button class="pill btnFollow" data-user="Marcos">Seguir</button></div>
-          </div>
-        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px" id="featuredProfiles"></div>
       </div>
 
       <!-- FEED -->
@@ -166,9 +107,10 @@
       </div>
     </section>
 
+    <!-- right panel -->
     <aside class="panel right">
       <h3>Sugerencias</h3>
-      <div class="suggestion"><div class="profile-mini"><div class="avatar">SL</div><div><b>Sofía</b><div class="muted">@sofia</div></div></div><button class="pill btnFollow" data-user="Sofía">Seguir</button></div>
+      <div class="suggestion" id="suggestion1"></div>
       <hr style="border:none;border-top:1px solid rgba(255,255,255,0.02);margin:12px 0">
       <h4>Actividad reciente</h4>
       <div id="recentActivity" class="muted">Cargando actividad...</div>
@@ -184,71 +126,83 @@
   </div>
 
   <script>
-    // --- Data (ejemplos) ---
+    // --- Configuración de API backend ---
+    const API_BASE = 'http://127.0.0.1:8000'; // Cambia si tu backend corre en otra URL
+
+    // --- Data local para perfiles (solo inicial) ---
     const sampleProfiles = [
       {id:1,name:'Alicia',user:'alicia',bio:'Fotógrafa. Capturando amaneceres y café.',followers:1240,following:210},
       {id:2,name:'Marcos',user:'marcos',bio:'Dev frontend, amante del synthwave.',followers:980,following:300},
       {id:3,name:'Sofía',user:'sofia',bio:'Diseñadora. Colores y tipografías.',followers:560,following:180}
     ];
 
-    const samplePosts = [
-      {id:101,user:'Alicia',time:'2h',text:'Amanecer en la costa 🌅 — nunca deja de sorprenderme.',image:'https://picsum.photos/900/420?random=101',likes:128,comments:12},
-      {id:102,user:'Marcos',time:'4h',text:'Publicando una demo de UI en modo oscuro. ¿Qué opinan?',image:'https://picsum.photos/900/420?random=102',likes:64,comments:8},
-      {id:103,user:'Sofía',time:'6h',text:'Nueva paleta lista — inspiración urbana.',image:'',likes:23,comments:4},
-      {id:104,user:'Alicia',time:'1d',text:'Explorando la ciudad con mi cámara 📸',image:'https://picsum.photos/900/420?random=103',likes:201,comments:34},
-      {id:105,user:'Marcos',time:'2d',text:'Música nueva en mi playlist — recomendada para concentrarse.',image:'',likes:42,comments:5}
-    ];
+    let posts = [];          // posts cargados desde backend
+    let notifications = [];  // notificaciones
+    let followers = {};      // seguimiento usuarios
 
-    // persistent storage
-    let posts = JSON.parse(localStorage.getItem('ss_posts')) || samplePosts.slice();
-    let notifications = JSON.parse(localStorage.getItem('ss_notifs')) || [
-      {id:1,text:'Alicia comenzó a seguirte',time:'3h'},
-      {id:2,text:'Marcos comentó tu publicación',time:'6h'}
-    ];
-    let followers = JSON.parse(localStorage.getItem('ss_followers')) || {Alicia:true,Marcos:false,Sofía:false};
-
-    // elements
+    // --- Elementos DOM ---
     const navItems = document.querySelectorAll('.nav-item');
-    const sections = {home:document.getElementById('home'),feed:document.getElementById('feed'),notifications:document.getElementById('notifications'),profiles:document.getElementById('profiles')};
+    const sections = {
+      home:document.getElementById('home'),
+      feed:document.getElementById('feed'),
+      notifications:document.getElementById('notifications'),
+      profiles:document.getElementById('profiles')
+    };
     const feedList = document.getElementById('feedList');
     const notifPanel = document.getElementById('notifPanel');
     const notifBadge = document.getElementById('notifBadge');
     const profilesList = document.getElementById('profilesList');
     const recentActivity = document.getElementById('recentActivity');
+    const featuredProfiles = document.getElementById('featuredProfiles');
 
+    // --- Navegación ---
     function switchTo(target){
       Object.values(sections).forEach(s=>s.style.display='none');
       sections[target].style.display='block';
       navItems.forEach(n=>n.classList.toggle('active', n.dataset.target===target));
     }
-
     navItems.forEach(n=>n.addEventListener('click',()=>switchTo(n.dataset.target)));
     document.getElementById('btnHome').addEventListener('click',()=>switchTo('home'));
     document.getElementById('btnFeed').addEventListener('click',()=>switchTo('feed'));
     document.getElementById('btnNotif').addEventListener('click',()=>switchTo('notifications'));
 
-    // render feed
+    // --- Helper escape HTML ---
+    function escapeHtml(text){ return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    // --- Cargar posts desde backend ---
+    async function loadPosts(){
+      try{
+        const res = await fetch(`${API_BASE}/posts`);
+        posts = await res.json();
+        renderFeed();
+      } catch(err){
+        console.error('Error cargando posts:', err);
+      }
+    }
+
+    // --- Render feed ---
     function renderFeed(){
       feedList.innerHTML='';
       posts.slice().reverse().forEach(p=>{
-        const node = document.createElement('article'); node.className='post';
+        const node = document.createElement('article');
+        node.className='post';
         node.dataset.id = p.id;
         node.innerHTML = `
           <div class="meta">
             <div class="avatar">${p.user[0].toUpperCase()}</div>
-            <div class="who">
-              <strong>${p.user}</strong>
-              <small class="muted"> • ${p.time || 'Ahora'}</small>
-            </div>
+            <div class="who"><strong>${p.user}</strong><small class="muted"> • ${p.time||'Ahora'}</small></div>
             <div style="margin-left:auto;color:var(--muted);font-size:13px">ID:${p.id}</div>
           </div>
           <div class="content">${escapeHtml(p.text)}</div>
-          ${p.image?`<img class='media' src='${p.image}' alt='media'>`:''}
+          ${p.image? `<img class='media' src='${p.image}' alt='media'>` : ''}
           <div class="actions">
             <div class="action like" data-id="${p.id}">❤️ <span class='likes'>${p.likes}</span></div>
             <div class="action comment">💬 <span class='comments'>${p.comments}</span></div>
             <div class="action share">🔗</div>
-            <div style="margin-left:auto;display:flex;gap:8px"><button class='btn ghost btnOpenProfile' data-user='${p.user}'>Perfil</button><button class='btn ghost btnDelete' data-id='${p.id}'>Eliminar</button></div>
+            <div style="margin-left:auto;display:flex;gap:8px">
+              <button class='btn ghost btnOpenProfile' data-user='${p.user}'>Perfil</button>
+              <button class='btn ghost btnDelete' data-id='${p.id}'>Eliminar</button>
+            </div>
           </div>
         `;
         feedList.appendChild(node);
@@ -256,101 +210,36 @@
       updateStats();
     }
 
-    // escape helpers
-    function escapeHtml(text){ return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-    // likes
-    feedList.addEventListener('click',e=>{
-      const likeBtn = e.target.closest('.like');
-      const deleteBtn = e.target.closest('.btnDelete');
-      const profileBtn = e.target.closest('.btnOpenProfile');
-      if(likeBtn){
-        const id = Number(likeBtn.dataset.id);
-        const idx = posts.findIndex(x=>x.id===id);
-        if(idx>-1){ posts[idx].likes++; saveAll(); renderFeed(); pushNotif(`${posts[idx].user} recibió un like`); }
-      } else if(deleteBtn){
-        const id = Number(deleteBtn.dataset.id);
-        if(confirm('Eliminar publicación?')){ posts = posts.filter(p=>p.id!==id); saveAll(); renderFeed(); pushNotif('Eliminaste una publicación'); }
-      } else if(profileBtn){
-        const user = profileBtn.dataset.user; openProfile(user);
-      }
-    });
-
-    // publishing
-    document.getElementById('publish').addEventListener('click',()=>{
+    // --- Publicar post ---
+    document.getElementById('publish').addEventListener('click', async ()=>{
       const txt = document.getElementById('postText').value.trim();
       const img = document.getElementById('imageSelect').value;
       if(!txt) return alert('Escribe algo antes de publicar');
-      const newP = {id:Date.now(), user:'Sebastián', time:'Ahora', text:txt, image:img || '', likes:0, comments:0};
-      posts.push(newP); saveAll(); renderFeed(); pushNotif('Publicaste algo nuevo');
-      document.getElementById('postText').value=''; document.getElementById('imageSelect').value='';
-      switchTo('feed');
-    });
-    document.getElementById('clear').addEventListener('click',()=>{ document.getElementById('postText').value=''; document.getElementById('imageSelect').value=''; });
 
-    // notifications
-    function renderNotifs(){
-      notifPanel.innerHTML = notifications.map(n=>`<div class='notif-item'><div style='font-weight:700'>${escapeHtml(n.text)}</div><div class='muted' style='font-size:13px'>${n.time||''}</div></div>`).join('');
-      notifBadge.style.display = notifications.length ? 'inline-block' : 'none';
-      notifBadge.textContent = notifications.length;
-      localStorage.setItem('ss_notifs', JSON.stringify(notifications));
-    }
-
-    function pushNotif(text){
-      notifications.unshift({id:Date.now(), text, time:'Ahora'});
-      if(notifications.length>50) notifications.pop();
-      renderNotifs();
-    }
-
-    // profiles
-    function renderProfiles(){
-      profilesList.innerHTML = sampleProfiles.map(p=>`<div class='panel' style='margin-bottom:10px'><div style='display:flex;align-items:center;gap:10px'><div class='avatar'>${p.name[0]}</div><div><strong>${p.name}</strong><div class='muted'>@${p.user}</div></div><div style='margin-left:auto'><button class='btn ghost btnOpenProfile' data-user='${p.name}'>Ver</button>&nbsp;<button class='pill btnFollow' data-user='${p.name}'>${followers[p.name]? 'Siguiendo':'Seguir'}</button></div></div><p class='muted' style='margin-top:8px'>${p.bio}</p></div>`).join('');
-      document.querySelectorAll('.btnFollow').forEach(b=>{
-        b.addEventListener('click',()=>{
-          const u = b.dataset.user; followers[u]=!followers[u]; b.textContent = followers[u]? 'Siguiendo':'Seguir'; localStorage.setItem('ss_followers',JSON.stringify(followers)); pushNotif(`${u} ahora ${followers[u] ? 'seguido' : 'no seguido'}`); updateStats();
+      const newPost = {user:'Sebastián', text:txt, image:img||''};
+      try{
+        const res = await fetch(`${API_BASE}/posts`, {
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify(newPost)
         });
-      });
-      document.querySelectorAll('.btnOpenProfile').forEach(b=>b.addEventListener('click',()=>openProfile(b.dataset.user)));
+        const savedPost = await res.json();
+        posts.push(savedPost);
+        renderFeed();
+        document.getElementById('postText').value='';
+        document.getElementById('imageSelect').value='';
+        switchTo('feed');
+      } catch(err){ console.error('Error publicando:',err);}
+    });
+
+    document.getElementById('clear').addEventListener('click',()=>{document.getElementById('postText').value='';document.getElementById('imageSelect').value='';});
+
+    // --- Inicialización ---
+    function boot(){
+      loadPosts();
     }
 
-    // open profile modal
-    const modal = document.getElementById('modal'); const modalContent = document.getElementById('modalContent');
-    function openProfile(name){
-      const p = sampleProfiles.find(x=>x.name===name) || sampleProfiles.find(x=>x.name.toLowerCase()===name.toLowerCase()) || {name};
-      modalContent.innerHTML = `<div style='display:flex;gap:12px;align-items:center'><div class='avatar' style='width:72px;height:72px;border-radius:14px'>${p.name[0]}</div><div><h3 style='margin:0'>${p.name}</h3><div class='muted'>@${p.user||p.name.toLowerCase()}</div></div></div><p style='margin-top:12px'>${p.bio||'—'}</p><div style='margin-top:8px' class='muted'>Seguidores: ${p.followers||0} • Siguiendo: ${p.following||0}</div><div style='margin-top:12px'><button class='btn btnFollow modalFollow' data-user='${p.name}'>${followers[p.name]? 'Siguiendo':'Seguir'}</button></div>`;
-      document.querySelector('.modal').style.display='flex';
-      document.querySelectorAll('.modalFollow').forEach(b=>b.addEventListener('click',()=>{ const u=b.dataset.user; followers[u]=!followers[u]; b.textContent = followers[u]? 'Siguiendo':'Seguir'; localStorage.setItem('ss_followers',JSON.stringify(followers)); pushNotif(`${u} ahora ${followers[u]? 'seguido' : 'no seguido'}`); updateStats(); }))
-    }
-    document.getElementById('closeModal').addEventListener('click',()=>document.querySelector('.modal').style.display='none');
-    modal.addEventListener('click',(e)=>{ if(e.target===modal) modal.style.display='none'; });
-
-    // save
-    function saveAll(){ localStorage.setItem('ss_posts', JSON.stringify(posts)); }
-
-    function updateStats(){
-      document.getElementById('stats').textContent = `Publicaciones: ${posts.length} • Seguidores: ${Object.values(followers).filter(Boolean).length}`;
-      recentActivity.textContent = `${posts.slice(-3).reverse().map(p=>p.user+': '+(p.text.slice(0,30))+'...').join(' • ')}`;
-    }
-
-    // initial render
-    function boot(){ renderFeed(); renderNotifs(); renderProfiles(); updateStats(); }
     boot();
-
-    // simulate activity: every 18s add a simulated notification (random)
-    setInterval(()=>{
-      const acts = [
-        'Alicia comentó tu publicación', 'Marcos le dio like a una publicación', 'Sofía empezó a seguirte', 'Alicia compartió una publicación', 'Marcos actualizó su perfil'
-      ];
-      const pick = acts[Math.floor(Math.random()*acts.length)];
-      pushNotif(pick);
-    },18000);
-
-    // expose export/import for debugging via console
-    window.SS = {posts,notifications,followers,exportJSON:()=>JSON.stringify({posts,notifications,followers},null,2)};
-
   </script>
 </body>
 </html>
-
-
-
