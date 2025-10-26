@@ -11,14 +11,22 @@ Hubieron tres fases principales: Frontend, Backend Y Data-Base.
 
 Backend: Fue la parte más importante del codigo, pues fue de las hechas en la fase temprana del proyecto. Consistió en 
 
-2.Tecnologías utilizadas
+2.Tecnologías utilizadas:
+
 Lenguaje backend: Python 3.10+.
+
 Framework del backend: FastAPI.
+
 Base de datos: MongoDB local
+
 Cliente MongoDB: PyMongo
+
 Middleware	CORS (para permitir peticiones desde el frontend)
+
 Servidor de desarrollo: Uvicorn
+
 Gestión de entorno: Virtualenv (venv)
+
 Interfaz de base de datos	MongoDB Compass
 
 Al ser un proyecto donde obviamente utilizariamos nuevas herramientas, teniamos que tener algunas instaladas desde antes para evitar retrasos en el desarrollo instalando algunas en medio del proyecto, como por ejemplo:
@@ -34,40 +42,69 @@ nos vamos a github y en en el repo copiamos el enlace a este ya mencionado, y en
 
 Tendrá que verse así:
 SOCIAL-APP/
+
 ├── backend/
+
 │   ├── app/
+
 │   │   ├── routers/
+
 │   │   │   ├── __init__.py
+
 │   │   │   ├── posts.py
+
 │   │   │   └── users.py
+
 │   │   ├── __init__.py
+
 │   │   ├── .gitignore
+
 │   │   └── requirements.txt          
+
 │   ├── __pycache__/                  
+
 │   ├── main.py                       # este es el main que debes ejecutar el comando de: uvicorn main:app
+
 │   ├── requirements.txt              
+
 │   └── venv/                        
+
 │
+
 ├── database/
+
 │   ├── database_design.md
+
 │   ├── main.py                       
+
 │   ├── schema.sql
+
 │   └── seed_data.sql
+
 │
+
 ├── frontend/
+
 │   ├── Fase_de_planeación.md
+
 │   ├── app.js
+
 │   ├── index.html
+
 │   └── .gitignore
+
 │
+
 ├── venv/                           
+
 ├── .gitignore
+
 ├── README.md
+
 └── Prueba/                          
 
 
-
-4.Manipular el repo en pc local
+4. Manipular el repo en pc local
 Como el nombre de este paso lo dice y de igual manera se indicó en la estructura pasada: vamos a ejecutar comandos en el repo clonado para comfirmar su funcionabilidad.
 
 4.1 Crear entorno virtual
