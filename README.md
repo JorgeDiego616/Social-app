@@ -12,8 +12,8 @@ Hubieron tres fases principales: Frontend, Backend Y Data-Base.
 Backend: Fue la parte más importante del codigo, pues fue de las hechas en la fase temprana del proyecto. Consistió en 
 
 2. Tecnologías utilizadas
-Lenguaje backend: Python 3.10+
-Framework del backend: FastAPI
+Lenguaje backend: Python 3.10+.
+Framework del backend: FastAPI.
 Base de datos: MongoDB local
 Cliente MongoDB: PyMongo
 Middleware	CORS (para permitir peticiones desde el frontend)
