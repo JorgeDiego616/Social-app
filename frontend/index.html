@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Shadow Social — Demo Completa</title>
   <style>
-    /* --- Estilos existentes, sin cambios --- */
     :root{ --bg:#0b0b0c; --panel:#111214; --muted:#9aa3ad; --accent:#7c5cff; --accent2:#3a9bdc; --radius:14px; --card-radius:16px; --shadow:0 8px 24px rgba(2,6,23,0.6); font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; }
     *{box-sizing:border-box} body{margin:0; min-height:100vh; background:linear-gradient(180deg,#050506,#0b0b0c); color:#e9f0f7}
     header.topbar{position:sticky;top:0;display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:#0f1012;box-shadow:var(--shadow);z-index:60}
@@ -14,19 +13,16 @@
     .notif-count{position:relative} .notif-count span{position:absolute;top:-6px;right:-8px;background:var(--accent2);color:#04121a;border-radius:50%;padding:2px 6px;font-size:11px;font-weight:700} 
     main.app{max-width:1200px;margin:22px auto;padding:18px;display:grid;grid-template-columns:280px 1fr 320px;gap:20px} 
     .panel{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:14px;border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid rgba(255,255,255,0.03)}
-    /* left panel */
     .profile-compact{display:flex;gap:12px;align-items:center} .avatar{width:56px;height:56px;border-radius:12px;background:#101316;display:grid;place-items:center;font-weight:800;color:var(--accent)} .muted{color:var(--muted)}
     .nav-list{display:flex;flex-direction:column;gap:8px;margin-top:12px} .nav-item{padding:8px 10px;border-radius:10px;cursor:pointer} .nav-item.active{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#04121a;font-weight:700} 
-    /* composer */
     .composer{display:flex;gap:12px;flex-direction:column} .composer textarea{min-height:72px;background:#0e0f11;border:1px solid rgba(255,255,255,0.03);border-radius:12px;padding:10px;color:inherit;resize:none} 
     .composer .row{display:flex;gap:8px;align-items:center} .btn{background:var(--accent);border:0;padding:8px 12px;border-radius:10px;color:#04121a;font-weight:800;cursor:pointer} .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.03);color:var(--muted)} 
-    /* feed */
     .feed{display:flex;flex-direction:column} .post{background:linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01));padding:14px;border-radius:14px;margin-bottom:12px;border:1px solid rgba(255,255,255,0.02)} 
     .post .meta{display:flex;gap:12px;align-items:flex-start} .post .meta .who{display:flex;flex-direction:column} .post .content{margin-top:10px;line-height:1.45} 
     .post img.media{width:100%;border-radius:12px;margin-top:12px;max-height:420px;object-fit:cover} .post .meta small{color:var(--muted)} .post .actions{display:flex;align-items:center;gap:10px;margin-top:10px} .action{display:inline-flex;gap:8px;align-items:center;padding:8px;border-radius:10px;cursor:pointer} .action.like.active{background:rgba(124,92,255,0.12)} 
-    /* right panel */ .suggestion{display:flex;align-items:center;justify-content:space-between;padding:8px;border-radius:10px;margin-bottom:8px} .profile-mini{display:flex;gap:10px;align-items:center} 
-    /* notifications */ .notif-panel{max-height:320px;overflow:auto} .notif-item{padding:10px;border-radius:10px;background:rgba(255,255,255,0.01);margin-bottom:8px} 
-    /* modal */ .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(2,6,23,0.6);z-index:200} .modal .card{background:var(--panel);padding:18px;border-radius:14px;max-width:600px;width:100%} 
+    .suggestion{display:flex;align-items:center;justify-content:space-between;padding:8px;border-radius:10px;margin-bottom:8px} .profile-mini{display:flex;gap:10px;align-items:center} 
+    .notif-panel{max-height:320px;overflow:auto} .notif-item{padding:10px;border-radius:10px;background:rgba(255,255,255,0.01);margin-bottom:8px} 
+    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(2,6,23,0.6);z-index:200} .modal .card{background:var(--panel);padding:18px;border-radius:14px;max-width:600px;width:100%} 
     @media (max-width:980px){main.app{grid-template-columns:1fr;padding:12px} .panel.right{display:none}}
   </style>
 </head>
@@ -126,21 +122,18 @@
   </div>
 
   <script>
-    // --- Configuración de API backend ---
-    const API_BASE = 'http://127.0.0.1:8000'; // Cambia si tu backend corre en otra URL
+    const API_BASE = 'http://127.0.0.1:8000';
 
-    // --- Data local para perfiles (solo inicial) ---
     const sampleProfiles = [
       {id:1,name:'Alicia',user:'alicia',bio:'Fotógrafa. Capturando amaneceres y café.',followers:1240,following:210},
       {id:2,name:'Marcos',user:'marcos',bio:'Dev frontend, amante del synthwave.',followers:980,following:300},
       {id:3,name:'Sofía',user:'sofia',bio:'Diseñadora. Colores y tipografías.',followers:560,following:180}
     ];
 
-    let posts = [];          // posts cargados desde backend
-    let notifications = [];  // notificaciones
-    let followers = {};      // seguimiento usuarios
+    let posts = [];
+    let notifications = [];
+    let followers = {};
 
-    // --- Elementos DOM ---
     const navItems = document.querySelectorAll('.nav-item');
     const sections = {
       home:document.getElementById('home'),
@@ -155,7 +148,6 @@
     const recentActivity = document.getElementById('recentActivity');
     const featuredProfiles = document.getElementById('featuredProfiles');
 
-    // --- Navegación ---
     function switchTo(target){
       Object.values(sections).forEach(s=>s.style.display='none');
       sections[target].style.display='block';
@@ -166,21 +158,16 @@
     document.getElementById('btnFeed').addEventListener('click',()=>switchTo('feed'));
     document.getElementById('btnNotif').addEventListener('click',()=>switchTo('notifications'));
 
-    // --- Helper escape HTML ---
     function escapeHtml(text){ return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-    // --- Cargar posts desde backend ---
     async function loadPosts(){
       try{
         const res = await fetch(`${API_BASE}/posts`);
         posts = await res.json();
         renderFeed();
-      } catch(err){
-        console.error('Error cargando posts:', err);
-      }
+      } catch(err){ console.error('Error cargando posts:', err);}
     }
 
-    // --- Render feed ---
     function renderFeed(){
       feedList.innerHTML='';
       posts.slice().reverse().forEach(p=>{
@@ -196,8 +183,8 @@
           <div class="content">${escapeHtml(p.text)}</div>
           ${p.image? `<img class='media' src='${p.image}' alt='media'>` : ''}
           <div class="actions">
-            <div class="action like" data-id="${p.id}">❤️ <span class='likes'>${p.likes}</span></div>
-            <div class="action comment">💬 <span class='comments'>${p.comments}</span></div>
+            <div class="action like" data-id="${p.id}">❤️ <span class='likes'>${p.likes||0}</span></div>
+            <div class="action comment">💬 <span class='comments'>${p.comments||0}</span></div>
             <div class="action share">🔗</div>
             <div style="margin-left:auto;display:flex;gap:8px">
               <button class='btn ghost btnOpenProfile' data-user='${p.user}'>Perfil</button>
@@ -210,7 +197,10 @@
       updateStats();
     }
 
-    // --- Publicar post ---
+    function updateStats(){
+      document.getElementById('stats').textContent = `Publicaciones: ${posts.length} • Seguidores: ${Object.keys(followers).length}`;
+    }
+
     document.getElementById('publish').addEventListener('click', async ()=>{
       const txt = document.getElementById('postText').value.trim();
       const img = document.getElementById('imageSelect').value;
@@ -232,13 +222,12 @@
       } catch(err){ console.error('Error publicando:',err);}
     });
 
-    document.getElementById('clear').addEventListener('click',()=>{document.getElementById('postText').value='';document.getElementById('imageSelect').value='';});
+    document.getElementById('clear').addEventListener('click',()=>{
+      document.getElementById('postText').value='';
+      document.getElementById('imageSelect').value='';
+    });
 
-    // --- Inicialización ---
-    function boot(){
-      loadPosts();
-    }
-
+    function boot(){ loadPosts(); }
     boot();
   </script>
 </body>
