@@ -1,38 +1,45 @@
--- =============================
--- SCHEMA DE LA BASE DE DATOS
--- Proyecto: Social Network API
--- Motor: SQLite
--- =============================
+PRAGMA foreign_keys = ON;
 
-DROP TABLE IF EXISTS follows;
-DROP TABLE IF EXISTS posts;
-DROP TABLE IF EXISTS users;
-
--- Tabla de usuarios
-CREATE TABLE users (
-id INTEGER PRIMARY KEY AUTOINCREMENT,
-username VARCHAR(50) NOT NULL UNIQUE,
-role VARCHAR(20) DEFAULT 'user',
-created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE IF NOT EXISTS users (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  username TEXT NOT NULL UNIQUE,
+  role TEXT NOT NULL DEFAULT 'user',
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
--- Tabla de publicaciones
-CREATE TABLE posts (
-id INTEGER PRIMARY KEY AUTOINCREMENT,
-title VARCHAR(100) NOT NULL,
-body TEXT NOT NULL,
-user_id INTEGER NOT NULL,
-status VARCHAR(20) DEFAULT 'published',
-created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-FOREIGN KEY (user_id) REFERENCES users(id)
+CREATE TABLE IF NOT EXISTS posts (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  title TEXT NOT NULL,
+  body TEXT NOT NULL,
+  user_id INTEGER NOT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- Tabla de relaciones de seguimiento
-CREATE TABLE follows (
-following_user_id INTEGER,
-followed_user_id INTEGER,
-created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-PRIMARY KEY (following_user_id, followed_user_id),
-FOREIGN KEY (following_user_id) REFERENCES users(id),
-FOREIGN KEY (followed_user_id) REFERENCES users(id)
+CREATE TABLE IF NOT EXISTS comments (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  post_id INTEGER NOT NULL,
+  user_id INTEGER NOT NULL,
+  text TEXT NOT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS likes (
+  user_id INTEGER NOT NULL,
+  post_id INTEGER NOT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (user_id, post_id),
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS follows (
+  following_user_id INTEGER NOT NULL,
+  followed_user_id  INTEGER NOT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (following_user_id, followed_user_id),
+  FOREIGN KEY (following_user_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (followed_user_id)  REFERENCES users(id) ON DELETE CASCADE
 );
