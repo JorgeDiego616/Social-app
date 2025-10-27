@@ -3,27 +3,31 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import sqlite3
 
-app = FastAPI(title="Social Network API", version="2.0")
-
-# ---------- CONFIGURACIÓN DE CORS ----------
+app = FastAPI(title="Social Network API", version="2.1")
 
 app.add_middleware(
-CORSMiddleware,
-allow_origins=["*"],  # puedes cambiar a ["http://localhost:3000"]
-allow_credentials=True,
-allow_methods=["*"],
-allow_headers=["*"],
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
-# ---------- CONEXIÓN A BASE DE DATOS ----------
+DB_PATH = "social_network.db"
 
 def get_db():
-    conn = sqlite3.connect("social_network.db")
+    conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     return conn
 
-# ---------- MODELOS Pydantic ----------
+def init_db():
+    conn = get_db()
+    with open("schema.sql", "r", encoding="utf-8") as f:
+        conn.executescript(f.read())
+    conn.commit()
+    conn.close()
 
+# ----- Pydantic -----
 class UserCreate(BaseModel):
     username: str
     role: str = "user"
@@ -33,12 +37,16 @@ class PostCreate(BaseModel):
     body: str
     user_id: int
 
+class CommentCreate(BaseModel):
+    post_id: int
+    user_id: int
+    text: str
+
 class FollowAction(BaseModel):
     following_user_id: int
     followed_user_id: int
 
-# ---------- USERS ----------
-
+# ----- Users -----
 @app.get("/users")
 def get_users():
     conn = get_db()
@@ -53,7 +61,7 @@ def get_user(user_id: int):
     conn.close()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-        return dict(user)
+    return dict(user)  # <-- corregido
 
 @app.post("/users", status_code=status.HTTP_201_CREATED)
 def create_user(user: UserCreate):
@@ -67,32 +75,54 @@ def create_user(user: UserCreate):
         conn.close()
         return dict(new_user)
     except sqlite3.IntegrityError:
-        raise HTTPException(status_code=400, detail="Integrity error occurred while creating user.")
-    
+        raise HTTPException(status_code=400, detail="Username already exists")
 
-# ---------- POSTS ----------
-
+# ----- Posts -----
 @app.get("/posts")
 def get_posts():
     conn = get_db()
     posts = conn.execute("""
-    SELECT p.*, u.username
-    FROM posts p
-    JOIN users u ON p.user_id = u.id
-    ORDER BY p.created_at DESC
+        SELECT p.*, u.username,
+               (SELECT COUNT(*) FROM likes l WHERE l.post_id = p.id) AS like_count,
+               (SELECT COUNT(*) FROM comments c WHERE c.post_id = p.id) AS comment_count
+        FROM posts p
+        JOIN users u ON p.user_id = u.id
+        ORDER BY p.created_at DESC
     """).fetchall()
     conn.close()
     return [dict(p) for p in posts]
+
+@app.get("/posts/{post_id}")
+def get_post(post_id: int):
+    conn = get_db()
+    post = conn.execute("""
+        SELECT p.*, u.username
+        FROM posts p JOIN users u ON p.user_id = u.id
+        WHERE p.id = ?
+    """, (post_id,)).fetchone()
+    if not post:
+        conn.close()
+        raise HTTPException(status_code=404, detail="Post not found")
+    comments = conn.execute("""
+        SELECT c.*, u.username
+        FROM comments c JOIN users u ON c.user_id = u.id
+        WHERE c.post_id = ?
+        ORDER BY c.created_at ASC
+    """, (post_id,)).fetchall()
+    like_count = conn.execute("SELECT COUNT(*) AS n FROM likes WHERE post_id = ?", (post_id,)).fetchone()["n"]
+    conn.close()
+    d = dict(post)
+    d["comments"] = [dict(c) for c in comments]
+    d["like_count"] = like_count
+    return d
 
 @app.post("/posts", status_code=status.HTTP_201_CREATED)
 def create_post(post: PostCreate):
     try:
         conn = get_db()
         cur = conn.cursor()
-        cur.execute(
-        "INSERT INTO posts (title, body, user_id) VALUES (?, ?, ?)",
-        (post.title, post.body, post.user_id)
-        )
+        cur.execute("INSERT INTO posts (title, body, user_id) VALUES (?, ?, ?)",
+                    (post.title, post.body, post.user_id))
         conn.commit()
         post_id = cur.lastrowid
         new_post = conn.execute("SELECT * FROM posts WHERE id = ?", (post_id,)).fetchone()
@@ -101,18 +131,56 @@ def create_post(post: PostCreate):
     except sqlite3.IntegrityError:
         raise HTTPException(status_code=400, detail="Invalid user_id")
 
-# ---------- FOLLOWS ----------
+# ----- Likes -----
+@app.post("/posts/{post_id}/like", status_code=status.HTTP_201_CREATED)
+def like_post(post_id: int, user_id: int):
+    try:
+        conn = get_db()
+        conn.execute("INSERT INTO likes (user_id, post_id) VALUES (?, ?)", (user_id, post_id))
+        conn.commit()
+        conn.close()
+        return {"message": "Liked"}
+    except sqlite3.IntegrityError:
+        raise HTTPException(status_code=400, detail="Already liked or invalid ids")
 
+@app.delete("/posts/{post_id}/like")
+def unlike_post(post_id: int, user_id: int):
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute("DELETE FROM likes WHERE user_id = ? AND post_id = ?", (user_id, post_id))
+    conn.commit()
+    if cur.rowcount == 0:
+        raise HTTPException(status_code=404, detail="Like not found")
+    conn.close()
+    return {"message": "Unliked"}
+
+# ----- Comments -----
+@app.post("/comments", status_code=status.HTTP_201_CREATED)
+def add_comment(c: CommentCreate):
+    conn = get_db()
+    try:
+        cur = conn.cursor()
+        cur.execute("INSERT INTO comments (post_id, user_id, text) VALUES (?, ?, ?)",
+                    (c.post_id, c.user_id, c.text))
+        conn.commit()
+        comment_id = cur.lastrowid
+        row = conn.execute("SELECT * FROM comments WHERE id = ?", (comment_id,)).fetchone()
+        return dict(row)
+    except sqlite3.IntegrityError:
+        raise HTTPException(status_code=400, detail="Invalid post_id or user_id")
+    finally:
+        conn.close()
+
+# ----- Follows -----
 @app.post("/follow", status_code=status.HTTP_201_CREATED)
 def follow_user(data: FollowAction):
     if data.following_user_id == data.followed_user_id:
         raise HTTPException(status_code=400, detail="Cannot follow yourself")
     try:
         conn = get_db()
-        cur = conn.cursor()
-        cur.execute(
-        "INSERT INTO follows (following_user_id, followed_user_id) VALUES (?, ?)",
-        (data.following_user_id, data.followed_user_id)
+        conn.execute(
+            "INSERT INTO follows (following_user_id, followed_user_id) VALUES (?, ?)",
+            (data.following_user_id, data.followed_user_id)
         )
         conn.commit()
         conn.close()
@@ -125,8 +193,8 @@ def unfollow_user(data: FollowAction):
     conn = get_db()
     cur = conn.cursor()
     cur.execute(
-    "DELETE FROM follows WHERE following_user_id = ? AND followed_user_id = ?",
-    (data.following_user_id, data.followed_user_id)
+        "DELETE FROM follows WHERE following_user_id = ? AND followed_user_id = ?",
+        (data.following_user_id, data.followed_user_id)
     )
     conn.commit()
     if cur.rowcount == 0:
@@ -134,30 +202,9 @@ def unfollow_user(data: FollowAction):
     conn.close()
     return {"message": "Unfollowed successfully!"}
 
-@app.get("/users/{user_id}/followers")
-def get_followers(user_id: int):
-    conn = get_db()
-    rows = conn.execute("""
-    SELECT u.id, u.username
-    FROM follows f
-    JOIN users u ON f.following_user_id = u.id
-    WHERE f.followed_user_id = ?
-    """, (user_id,)).fetchall()
-    conn.close()
-    return [dict(r) for r in rows]
-
-@app.get("/users/{user_id}/following")
-def get_following(user_id: int):
-    conn = get_db()
-    rows = conn.execute("""
-    SELECT u.id, u.username
-    FROM follows f
-    JOIN users u ON f.followed_user_id = u.id
-    WHERE f.following_user_id = ?
-    """, (user_id,)).fetchall()
-    conn.close()
-    return [dict(r) for r in rows]
-
 @app.get("/health")
 def health_check():
-    return {"status": "ok", "message": "API running and connected to backend"}
+    return {"status": "ok"}
+
+# Inicializa tablas al arrancar
+init_db()
